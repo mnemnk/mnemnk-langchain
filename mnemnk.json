@@ -1,0 +1,46 @@
+{
+  "agents": [
+    {
+      "kind": "Command",
+      "name": "mnemnk-langchain-chat-model",
+      "title": "Chat Model",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-chat-model"]
+      },
+      "inputs": ["*"],
+      "outputs": ["ai_message"],
+      "default_config": [
+        [
+          "model",
+          {
+            "value": "gemma3:4b",
+            "type": "string",
+            "title": "Chat model"
+          }
+        ],
+        [
+          "model_provider",
+          {
+            "value": "ollama",
+            "type": "string",
+            "title": "Model provider"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "Command",
+      "name": "mnemnk-langchain-to-human-message",
+      "title": "To Human Message",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-to-human-message"]
+      },
+      "inputs": ["*"],
+      "outputs": ["message"]
+    }
+  ]
+}

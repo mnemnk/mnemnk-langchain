@@ -7,10 +7,13 @@ authors = [
     { name = "Akira Ishino", email = "akira@lumilab.jp" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "langchain[ollama,openai]>=0.3.23",
+]
 
 [project.scripts]
-mnemnk-langchain = "mnemnk_langchain:main"
+mnemnk-langchain-chat-model = "mnemnk_langchain.chat_model:main"
+mnemnk-langchain-to-human-message = "mnemnk_langchain.to_human_message:main"
 
 [build-system]
 requires = ["hatchling"]
