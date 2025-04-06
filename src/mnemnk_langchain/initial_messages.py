@@ -51,7 +51,7 @@ def main():
 
                 if is_initial:
                     initial_messages = config["messages"]
-                    if initial_messages != "":
+                    if initial_messages:
                         messages = messages_to_dict(convert_to_messages(initial_messages))
                     is_initial = False
                 
