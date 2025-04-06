@@ -7,7 +7,7 @@ from langchain_core.messages.utils import messages_from_dict, trim_messages
 
 
 CONFIG = {
-    "max_messages": 5,
+    "max_messages": 7,
 }
 
 
