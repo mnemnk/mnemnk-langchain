@@ -1,8 +1,8 @@
 import json
 import sys
 
-from langchain_core.messages.human import HumanMessage
-from langchain_core.messages.base import message_to_dict
+from langchain_core.messages.base import messages_to_dict
+from langchain_core.messages.utils import convert_to_messages
 
 
 def main():
@@ -24,9 +24,9 @@ def main():
         if line.startswith(".IN "):
             try:
                 [_kind, value] = parse_input(line)
-                message = HumanMessage(content=value)
-                out_value = message_to_dict(message)
-                write_out("message", out_value)
+                messages = convert_to_messages(value)
+                out_value = messages_to_dict(messages)
+                write_out("messages", out_value)
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
 

@@ -44,6 +44,18 @@
     },
     {
       "kind": "Command",
+      "name": "mnemnk-langchain-to-messages",
+      "title": "To Messages",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-to-messages"]
+      },
+      "inputs": ["*"],
+      "outputs": ["messages"]
+    },
+    {
+      "kind": "Command",
       "name": "mnemnk-langchain-in-memory-chat-history",
       "title": "InMemory Chat History",
       "category": "LangChain",
@@ -57,7 +69,7 @@
         [
           "max_messages",
           {
-            "value": 5,
+            "value": 7,
             "type": "number",
             "title": "Max messages"
           }
