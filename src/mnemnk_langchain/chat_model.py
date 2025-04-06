@@ -6,6 +6,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages.base import message_to_dict
 from langchain_core.messages.utils import convert_to_messages, messages_from_dict
 
+from . import parse_input, write_out
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -74,14 +76,3 @@ def main():
                 print(f"Error: {e}", file=sys.stderr)
             
             continue
-
-
-def parse_input(line: str):
-    [_cmd, kind, value] = line.split(" ", 2)
-    value = json.loads(value)
-    return kind, value
-
-
-def write_out(kind: str, value: any):
-    json_value = json.dumps(value)
-    print(f".OUT {kind} {json_value}", flush=True)
