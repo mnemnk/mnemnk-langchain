@@ -5,6 +5,8 @@ import sys
 from langchain_core.messages.base import messages_to_dict
 from langchain_core.messages.utils import messages_from_dict, trim_messages
 
+from . import parse_input, write_out
+
 
 CONFIG = {
     "max_messages": 7,
@@ -89,14 +91,3 @@ def main():
                 print(f"Error: {e}", file=sys.stderr)
             
             continue
-
-
-def parse_input(line: str):
-    [_cmd, kind, value] = line.split(" ", 2)
-    value = json.loads(value)
-    return kind, value
-
-
-def write_out(kind: str, value: any):
-    json_value = json.dumps(value)
-    print(f".OUT {kind} {json_value}", flush=True)

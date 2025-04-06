@@ -1,8 +1,9 @@
-import json
 import sys
 
 from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.base import message_to_dict
+
+from . import parse_input, write_out
 
 
 def main():
@@ -31,14 +32,3 @@ def main():
                 print(f"Error: {e}", file=sys.stderr)
 
             continue
-
-
-def parse_input(line: str):
-    [_cmd, kind, value] = line.split(" ", 2)
-    value = json.loads(value)
-    return kind, value
-
-
-def write_out(kind: str, value: any):
-    json_value = json.dumps(value)
-    print(f".OUT {kind} {json_value}", flush=True)
