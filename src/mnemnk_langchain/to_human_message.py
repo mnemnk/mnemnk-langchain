@@ -22,14 +22,17 @@ def main():
             break
 
         if line.startswith(".IN "):
-            [_kind, value] = parse_input(line)
-            # out_value = {"content": value}
-            if isinstance(value, str):
-                message = HumanMessage(content=value)
-            elif isinstance(value, list):
-                message = HumanMessage(content="\n".join(value))
-            out_value = message_to_dict(message)
-            write_out("message", out_value)
+            try:
+                [_kind, value] = parse_input(line)
+                if isinstance(value, str):
+                    message = HumanMessage(content=value)
+                elif isinstance(value, list):
+                    message = HumanMessage(content="\n".join(value))
+                out_value = message_to_dict(message)
+                write_out("message", out_value)
+            except Exception as e:
+                print(f"Error: {e}", file=sys.stderr)
+
             continue
 
 
