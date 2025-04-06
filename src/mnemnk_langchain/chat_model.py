@@ -4,7 +4,7 @@ import sys
 
 from langchain.chat_models import init_chat_model
 from langchain_core.messages.base import message_to_dict
-from langchain_core.messages.utils import messages_from_dict
+from langchain_core.messages.utils import convert_to_messages, messages_from_dict
 
 
 CONFIG = {
@@ -36,28 +36,40 @@ def main():
         line = line.strip()
 
         if line.startswith(".CONFIG "):
-            [_, config_str] = line.split(" ", 1)
-            config.update(json.loads(config_str))
-            model = init_chat_model(config["model"], model_provider=config["model_provider"])
+            try:
+                [_, config_str] = line.split(" ", 1)
+                config.update(json.loads(config_str))
+                model = init_chat_model(config["model"], model_provider=config["model_provider"])
+            except Exception as e:
+                print(f"Error: {e}", file=sys.stderr)
+
             continue
 
         if line == ".QUIT":
             break
 
         if line.startswith(".IN "):
-            [kind, value] = parse_input(line)
-            if kind == "message":
-                messages = messages_from_dict([value])
-                resp = model.invoke(messages)
+            try:
+                [kind, value] = parse_input(line)
 
-            elif kind == "messages":
-                messages = messages_from_dict(value)
-                resp = model.invoke(messages)
-            else:
-                resp = model.invoke(value)
+                if kind == "message":
+                    messages = messages_from_dict([value])
+                elif kind == "messages":
+                    messages = messages_from_dict(value)
+                else:
+                    messages = convert_to_messages(value)
+                
+                # Skip if the last message is from AI to avoid infinite loop
+                if messages and messages[-1].type == "ai":
+                    continue
 
-            out_value = message_to_dict(resp)
-            write_out("ai_message", out_value)
+                resp = model.invoke(messages)
+                out_value = message_to_dict(resp)
+                write_out("message", out_value)
+
+            except Exception as e:
+                print(f"Error: {e}", file=sys.stderr)
+            
             continue
 
 

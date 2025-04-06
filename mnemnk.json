@@ -10,7 +10,7 @@
         "args": ["run", "mnemnk-langchain-chat-model"]
       },
       "inputs": ["*"],
-      "outputs": ["ai_message"],
+      "outputs": ["message"],
       "default_config": [
         [
           "model",
@@ -41,6 +41,28 @@
       },
       "inputs": ["*"],
       "outputs": ["message"]
+    },
+    {
+      "kind": "Command",
+      "name": "mnemnk-langchain-in-memory-chat-history",
+      "title": "InMemory Chat History",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-in-memory-chat-history"]
+      },
+      "inputs": ["*"],
+      "outputs": ["messages"],
+      "default_config": [
+        [
+          "max_messages",
+          {
+            "value": 5,
+            "type": "number",
+            "title": "Max messages"
+          }
+        ]
+      ]
     }
   ]
 }
