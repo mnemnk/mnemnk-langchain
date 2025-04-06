@@ -56,6 +56,28 @@
     },
     {
       "kind": "Command",
+      "name": "mnemnk-langchain-initial-messages",
+      "title": "Initial Messages",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-initial-messages"]
+      },
+      "inputs": ["reset", "*"],
+      "outputs": ["messages"],
+      "default_config": [
+        [
+          "messages",
+          {
+            "value": null,
+            "type": "object",
+            "title": "Initial Messages"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "Command",
       "name": "mnemnk-langchain-in-memory-chat-history",
       "title": "InMemory Chat History",
       "category": "LangChain",
