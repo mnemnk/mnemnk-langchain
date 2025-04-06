@@ -15,6 +15,7 @@ dependencies = [
 [project.scripts]
 mnemnk-langchain-chat-model = "mnemnk_langchain.chat_model:main"
 mnemnk-langchain-to-human-message = "mnemnk_langchain.to_human_message:main"
+mnemnk-langchain-to-messages = "mnemnk_langchain.to_messages:main"
 mnemnk-langchain-in-memory-chat-history = "mnemnk_langchain.in_memory_chat_history:main"
 
 [build-system]
