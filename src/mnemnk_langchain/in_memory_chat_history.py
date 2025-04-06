@@ -26,7 +26,7 @@ def main():
     if args.config:
         config.update(json.loads(args.config))
     
-    hisotry = []
+    history = []
 
     # Main loop
     for line in sys.stdin:
@@ -47,17 +47,17 @@ def main():
                 # Add the new message to the history
                 if kind == "message":
                     messages = messages_from_dict([value])
-                    hisotry.append(messages[0])
+                    history.append(messages[0])
                 elif kind == "messages":
                     messages = messages_from_dict(value)
-                    hisotry.extend(messages)
+                    history.extend(messages)
                 else:
                     print(f"Error: Unknown kind: {kind}", file=sys.stderr)
                     continue
                 
                 # Trim the history to the max count
                 trimed = trim_messages(
-                    hisotry,
+                    history,
                     # Keep the last <= n_count tokens of the messages.
                     strategy="last",
                     token_counter=len,
@@ -78,11 +78,11 @@ def main():
                     # The SystemMessage has special instructions for the model.
                     include_system=True,
                 )
-                hisotry = trimed
-                if not hisotry:
+                history = trimed
+                if not history:
                     continue
 
-                out_value = messages_to_dict(hisotry)
+                out_value = messages_to_dict(history)
                 write_out("messages", out_value)
             
             except Exception as e:
