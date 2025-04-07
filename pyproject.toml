@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.13.3",
+    "langchain-community>=0.3.21",
     "langchain[ollama,openai]>=0.3.23",
     "python-dotenv>=1.1.0",
 ]
@@ -18,6 +20,7 @@ mnemnk-langchain-to-human-message = "mnemnk_langchain.to_human_message:main"
 mnemnk-langchain-to-messages = "mnemnk_langchain.to_messages:main"
 mnemnk-langchain-initial-messages = "mnemnk_langchain.initial_messages:main"
 mnemnk-langchain-in-memory-chat-history = "mnemnk_langchain.in_memory_chat_history:main"
+mnemnk-langchain-web-base-loader = "mnemnk_langchain.web_base_loader:main"
 
 [build-system]
 requires = ["hatchling"]
