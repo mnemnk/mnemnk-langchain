@@ -35,7 +35,8 @@ def main():
         line = line.strip()
 
         if line.startswith(".CONFIG "):
-            # do nothing
+            [_, config_str] = line.split(" ", 1)
+            config.update(json.loads(config_str))
             continue
 
         if line == ".QUIT":
