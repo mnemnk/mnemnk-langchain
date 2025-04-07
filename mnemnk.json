@@ -97,6 +97,18 @@
           }
         ]
       ]
+    },
+    {
+      "kind": "Command",
+      "name": "mnemnk-langchain-web-base-loader",
+      "title": "Web Base Loader",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-web-base-loader"]
+      },
+      "inputs": ["*"],
+      "outputs": ["document", "content"]
     }
   ]
 }
