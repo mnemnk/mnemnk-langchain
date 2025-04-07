@@ -27,6 +27,9 @@ def main():
                 if value.startswith("http://") or value.startswith("https://"):
                     loader = WebBaseLoader(web_path=value)
                     documents = loader.load()
+                    if not documents:
+                        print("Error: No documents found", file=sys.stderr)
+                        continue
                     document = documents[0]
 
                     doc_dict = {
