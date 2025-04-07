@@ -109,6 +109,18 @@
       },
       "inputs": ["*"],
       "outputs": ["document", "content"]
+    },
+    {
+      "kind": "Command",
+      "name": "mnemnk-langchain-youtube-loader",
+      "title": "YouTube Loader",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-youtube-loader"]
+      },
+      "inputs": ["*"],
+      "outputs": ["document", "content"]
     }
   ]
 }
