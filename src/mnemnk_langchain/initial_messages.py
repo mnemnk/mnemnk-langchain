@@ -36,7 +36,11 @@ def main():
 
         if line.startswith(".CONFIG "):
             [_, config_str] = line.split(" ", 1)
-            config.update(json.loads(config_str))
+            try:
+                config.update(json.loads(config_str))
+            except json.JSONDecodeError as e:
+                print(f"Error: Invalid JSON in .CONFIG command: {e}", file=sys.stderr)
+                continue
             continue
 
         if line == ".QUIT":
