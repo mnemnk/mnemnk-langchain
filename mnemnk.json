@@ -78,6 +78,36 @@
     },
     {
       "kind": "Command",
+      "name": "mnemnk-langchain-recursive-character-text-splitter",
+      "title": "Recursive Character Text Splitter",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-recursive-character-text-splitter"]
+      },
+      "inputs": ["text"],
+      "outputs": ["texts"],
+      "default_config": [
+        [
+          "chunk_size",
+          {
+            "value": 4000,
+            "type": "integer",
+            "title": "chunk size"
+          }
+        ],
+        [
+          "chunk_overlap",
+          {
+            "value": 20,
+            "type": "integer",
+            "title": "chunk overlap"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "Command",
       "name": "mnemnk-langchain-in-memory-chat-history",
       "title": "InMemory Chat History",
       "category": "LangChain",
