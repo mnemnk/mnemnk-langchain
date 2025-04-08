@@ -36,7 +36,7 @@ def main():
                         "metadata": document.metadata,
                         "page_content": document.page_content,
                     }
-                    write_out("docuemnt", "document", doc_dict)
+                    write_out("document", "document", doc_dict)
                     write_out("content", "text", document.page_content)
 
             except Exception as e:
