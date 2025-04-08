@@ -55,7 +55,7 @@ def main():
 
         if line.startswith(".IN "):
             try:
-                [kind, value] = parse_input(line)
+                [_ch, kind, value] = parse_input(line)
 
                 if kind == "message":
                     messages = messages_from_dict([value])
@@ -70,7 +70,7 @@ def main():
 
                 resp = model.invoke(messages)
                 out_value = message_to_dict(resp)
-                write_out("message", out_value)
+                write_out("message", "message", out_value)
 
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
