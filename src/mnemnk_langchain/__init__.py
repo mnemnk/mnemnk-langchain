@@ -2,12 +2,12 @@ import json
 from typing import Any
 
 
-def parse_input(line: str):
-    [_cmd, kind, value] = line.split(" ", 2)
+def parse_input(line: str) -> tuple[str, str, Any]:
+    [_cmd, ch, kind, value] = line.split(" ", 3)
     value = json.loads(value)
-    return kind, value
+    return ch, kind, value
 
 
-def write_out(kind: str, value: Any):
+def write_out(ch: str, kind: str, value: Any):
     json_value = json.dumps(value)
-    print(f".OUT {kind} {json_value}", flush=True)
+    print(f".OUT {ch} {kind} {json_value}", flush=True)

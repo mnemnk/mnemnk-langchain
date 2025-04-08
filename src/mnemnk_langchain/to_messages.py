@@ -24,10 +24,10 @@ def main():
 
         if line.startswith(".IN "):
             try:
-                [_kind, value] = parse_input(line)
+                [_ch, _kind, value] = parse_input(line)
                 messages = convert_to_messages(value)
                 out_value = messages_to_dict(messages)
-                write_out("messages", out_value)
+                write_out("messages", "messages", out_value)
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
 

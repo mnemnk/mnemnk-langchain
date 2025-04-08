@@ -22,7 +22,7 @@ def main():
 
         if line.startswith(".IN "):
             try:
-                [_kind, value] = parse_input(line)
+                [_ch, _kind, value] = parse_input(line)
 
                 if value.startswith("http://") or value.startswith("https://"):
                     loader = WebBaseLoader(web_path=value)
@@ -36,9 +36,8 @@ def main():
                         "metadata": document.metadata,
                         "page_content": document.page_content,
                     }
-                    write_out("document", doc_dict)
-
-                    write_out("content", document.page_content)
+                    write_out("document", "document", doc_dict)
+                    write_out("content", "text", document.page_content)
 
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)

@@ -48,9 +48,9 @@ def main():
 
         if line.startswith(".IN "):
             try:
-                [kind, value] = parse_input(line)
+                [ch, kind, value] = parse_input(line)
 
-                if kind == "reset":
+                if ch == "reset":
                     is_initial = True
                     continue
 
@@ -70,7 +70,7 @@ def main():
                     print(f"Error: Unknown kind: {kind}", file=sys.stderr)
                     continue
 
-                write_out("messages", messages)
+                write_out("messages", "messages", messages)
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
 
