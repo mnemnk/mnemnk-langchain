@@ -27,6 +27,13 @@
             "type": "string",
             "title": "Model provider"
           }
+        ],
+        [
+          "kwargs",
+          {
+            "value": {},
+            "type": "object"
+          }
         ]
       ]
     },
