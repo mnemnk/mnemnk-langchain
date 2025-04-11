@@ -1,10 +1,10 @@
+from typing import Any
 from . import BaseAgent, run_agent
-
 
 class PyPDFLoaderAgent(BaseAgent):
     """Load PDF file using PyPDFLoader."""
 
-    def process_input(self, _ch: str, _kind: str, value: any):
+    def process_input(self, _ch: str, _kind: str, value: Any):
         from langchain_community.document_loaders import PyPDFLoader
 
         loader = PyPDFLoader(value)
