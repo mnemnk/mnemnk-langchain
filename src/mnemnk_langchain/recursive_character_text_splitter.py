@@ -1,70 +1,39 @@
-import argparse
-import json
-import sys
-
+from typing import Optional
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from . import parse_input, write_out
+from . import BaseAgent, run_agent
 
 
-CONFIG = {
-    "chunk_size": 4000,
-    "chunk_overlap": 20,
-}
+class RecursiveCharacterTextSplitterAgent(BaseAgent):
+    """Agent that splits text into chunks using RecursiveCharacterTextSplitter."""
 
+    DEFAULT_CONFIG = {
+        "model_name": "gpt-3.5-turbo",
+        "chunk_size": 4000,
+        "chunk_overlap": 20,
+    }
+
+    def __init__(self, config=None):
+        """Initialize the RecursiveCharacterTextSplitterAgent with configuration."""
+        super().__init__(config)
+        self.process_config(self.config)
+    
+    def process_config(self, _new_config: Optional[dict[str, any]]):
+        self.text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+            model_name=self.config["model_name"],
+            chunk_size=self.config["chunk_size"],
+            chunk_overlap=self.config["chunk_overlap"],
+        )
+    
+    def process_input(self, _ch: str, _kind: str, value: any):
+        texts = self.text_splitter.split_text(value)
+        for text in texts:
+            self.write_out("texts", "text", text)
+    
 
 def main():
-    # Ensure sys.stdin/stdout uses UTF-8 encoding
-    sys.stdin.reconfigure(encoding='utf-8')
-    sys.stdout.reconfigure(encoding='utf-8')
+    run_agent(RecursiveCharacterTextSplitterAgent)
 
-    # Parse command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--config", help="config json string")
-    args = parser.parse_args()
 
-    # Load config from command line arguments or use default
-    config = CONFIG.copy()
-    if args.config:
-        config.update(json.loads(args.config))
-    
-    # Initialize the chat model
-    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        model_name="gpt-3.5-turbo",
-        chunk_size=config["chunk_size"],
-        chunk_overlap=config["chunk_overlap"],
-    )
-
-    # Main loop
-    for line in sys.stdin:
-        line = line.strip()
-
-        if line.startswith(".CONFIG "):
-            try:
-                [_, config_str] = line.split(" ", 1)
-                config.update(json.loads(config_str))
-                text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-                    model_name="gpt-3.5-turbo",
-                    chunk_size=config["chunk_size"],
-                    chunk_overlap=config["chunk_overlap"],
-                )
-            except Exception as e:
-                print(f"Error: {e}", file=sys.stderr)
-
-            continue
-
-        if line == ".QUIT":
-            break
-
-        if line.startswith(".IN "):
-            try:
-                [_ch, _kind, value] = parse_input(line)
-
-                texts = text_splitter.split_text(value)
-                for text in texts:
-                    write_out("texts", "text", text)
-
-            except Exception as e:
-                print(f"Error: {e}", file=sys.stderr)
-            
-            continue
+if __name__ == "__main__":
+    main()

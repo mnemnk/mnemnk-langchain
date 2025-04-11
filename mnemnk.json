@@ -96,6 +96,14 @@
       "outputs": ["texts"],
       "default_config": [
         [
+          "model_name",
+          {
+            "value": "gpt-3.5-turbo",
+            "type": "string",
+            "title": "Model name"
+          }
+        ],
+        [
           "chunk_size",
           {
             "value": 4000,
@@ -131,6 +139,22 @@
             "value": 7,
             "type": "number",
             "title": "Max messages"
+          }
+        ],
+        [
+          "start_on",
+          {
+            "value": null,
+            "type": "object",
+            "title": "Start on"
+          }
+        ],
+        [
+          "include_system",
+          {
+            "value": false,
+            "type": "boolean",
+            "title": "Include system"
           }
         ]
       ]
