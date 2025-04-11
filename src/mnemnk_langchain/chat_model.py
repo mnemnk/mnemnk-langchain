@@ -35,7 +35,12 @@ def main():
         config.update(json.loads(args.config))
     
     # Initialize the chat model
-    model = init_chat_model(config["model"], model_provider=config["model_provider"], **config["kwargs"])
+    model = init_chat_model(
+        config["model"],
+        model_provider=config["model_provider"],
+        configurable_fields="any",
+        **config["kwargs"],
+    )
 
     # Main loop
     for line in sys.stdin:
@@ -45,7 +50,12 @@ def main():
             try:
                 [_, config_str] = line.split(" ", 1)
                 config.update(json.loads(config_str))
-                model = init_chat_model(config["model"], model_provider=config["model_provider"], configurable_fields="any", **config["kwargs"])
+                model = init_chat_model(
+                    config["model"],
+                    model_provider=config["model_provider"],
+                    configurable_fields="any",
+                    **config["kwargs"],
+                )
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
 
