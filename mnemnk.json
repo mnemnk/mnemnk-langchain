@@ -161,6 +161,18 @@
     },
     {
       "kind": "Command",
+      "name": "mnemnk-langchain-py-pdf-loader",
+      "title": "PyPDF Loader",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-py-pdf-loader"]
+      },
+      "inputs": ["path"],
+      "outputs": ["document", "content"]
+    },
+    {
+      "kind": "Command",
       "name": "mnemnk-langchain-web-base-loader",
       "title": "Web Base Loader",
       "category": "LangChain",
@@ -168,7 +180,7 @@
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-web-base-loader"]
       },
-      "inputs": ["*"],
+      "inputs": ["url"],
       "outputs": ["document", "content"]
     },
     {
@@ -180,7 +192,7 @@
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-youtube-loader"]
       },
-      "inputs": ["*"],
+      "inputs": ["url"],
       "outputs": ["document", "content"]
     }
   ]
