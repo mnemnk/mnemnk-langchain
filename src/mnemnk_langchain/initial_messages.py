@@ -1,77 +1,49 @@
-import argparse
-import json
-import sys
-
 from langchain_core.messages.base import messages_to_dict
 from langchain_core.messages.utils import convert_to_messages
+from loguru import logger
 
-from . import parse_input, write_out
+from . import BaseAgent, run_agent
 
 
-CONFIG = {
-    "messages": None,
-}
+class InitialMessagesAgent(BaseAgent):
+    """Agent that handles initial messages and resets."""
+
+    DEFAULT_CONFIG = {
+        "messages": None,
+    }
+
+    def __init__(self, config=None):
+        """Initialize the InitialMessagesAgent with configuration."""
+        super().__init__(config)
+        self.is_initial = False
+
+    def process_input(self, ch: str, kind: str, value: any):
+        if ch == "reset":
+            self.is_initial = True
+            return
+
+        messages = []
+
+        if self.is_initial:
+            initial_messages = self.config["messages"]
+            if initial_messages:
+                messages = messages_to_dict(convert_to_messages(initial_messages))
+            self.is_initial = False
+        
+        if kind == "message":
+            messages.append(value)
+        elif kind == "messages":
+            messages.extend(value)
+        else:
+            logger.error(f"Error: Unknown kind: {kind}")
+            return
+
+        self.write_out("messages", "messages", messages)
 
 
 def main():
-    # Ensure sys.stdin/stdout uses UTF-8 encoding
-    sys.stdin.reconfigure(encoding='utf-8')
-    sys.stdout.reconfigure(encoding='utf-8')
+    run_agent(InitialMessagesAgent)
 
-    is_initial = True
 
-    # Parse command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--config", help="config json string")
-    args = parser.parse_args()
-
-    # Load config from command line arguments or use default
-    config = CONFIG.copy()
-    if args.config:
-        config.update(json.loads(args.config))
-    
-    # Main loop
-    for line in sys.stdin:
-        line = line.strip()
-
-        if line.startswith(".CONFIG "):
-            [_, config_str] = line.split(" ", 1)
-            try:
-                config.update(json.loads(config_str))
-            except json.JSONDecodeError as e:
-                print(f"Error: Invalid JSON in .CONFIG command: {e}", file=sys.stderr)
-                continue
-            continue
-
-        if line == ".QUIT":
-            break
-
-        if line.startswith(".IN "):
-            try:
-                [ch, kind, value] = parse_input(line)
-
-                if ch == "reset":
-                    is_initial = True
-                    continue
-
-                messages = []
-
-                if is_initial:
-                    initial_messages = config["messages"]
-                    if initial_messages:
-                        messages = messages_to_dict(convert_to_messages(initial_messages))
-                    is_initial = False
-                
-                if kind == "message":
-                    messages.append(value)
-                elif kind == "messages":
-                    messages.extend(value)
-                else:
-                    print(f"Error: Unknown kind: {kind}", file=sys.stderr)
-                    continue
-
-                write_out("messages", "messages", messages)
-            except Exception as e:
-                print(f"Error: {e}", file=sys.stderr)
-
-            continue
+if __name__ == "__main__":
+    main()
