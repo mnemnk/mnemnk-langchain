@@ -173,6 +173,18 @@
     },
     {
       "kind": "Command",
+      "name": "mnemnk-langchain-py-mu-pdf-loader",
+      "title": "PyMuPDF Loader",
+      "category": "LangChain",
+      "command": {
+        "cmd": "uv",
+        "args": ["run", "mnemnk-langchain-py-mu-pdf-text-loader"]
+      },
+      "inputs": ["path"],
+      "outputs": ["document", "content"]
+    },
+    {
+      "kind": "Command",
       "name": "mnemnk-langchain-web-base-loader",
       "title": "Web Base Loader",
       "category": "LangChain",

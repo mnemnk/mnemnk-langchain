@@ -12,6 +12,7 @@ dependencies = [
     "langchain-community>=0.3.21",
     "langchain[ollama,openai]>=0.3.23",
     "loguru>=0.7.3",
+    "pymupdf>=1.25.5",
     "pypdf>=5.4.0",
     "python-dotenv>=1.1.0",
     "pytube>=15.0.0",
@@ -26,6 +27,7 @@ mnemnk-langchain-initial-messages = "mnemnk_langchain.initial_messages:main"
 mnemnk-langchain-recursive-character-text-splitter = "mnemnk_langchain.recursive_character_text_splitter:main"
 mnemnk-langchain-in-memory-chat-history = "mnemnk_langchain.in_memory_chat_history:main"
 mnemnk-langchain-py-pdf-loader = "mnemnk_langchain.py_pdf_loader:main"
+mnemnk-langchain-py-mu-pdf-text-loader = "mnemnk_langchain.py_mu_pdf_text_loader:main"
 mnemnk-langchain-web-base-loader = "mnemnk_langchain.web_base_loader:main"
 mnemnk-langchain-youtube-loader = "mnemnk_langchain.youtube_loader:main"
 
