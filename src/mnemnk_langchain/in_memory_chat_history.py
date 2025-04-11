@@ -32,7 +32,7 @@ class InMemoryChatHistory(BaseAgent):
             return
         
         # Trim the history to the max count
-        trimed = trim_messages(
+        self.history = trim_messages(
             self.history,
             # Keep the last <= n_count tokens of the messages.
             strategy="last",
@@ -54,11 +54,10 @@ class InMemoryChatHistory(BaseAgent):
             # The SystemMessage has special instructions for the model.
             include_system=self.config["include_system"],
         )
-        history = trimed
-        if not history:
+        if not self.history:
             return
 
-        out_value = messages_to_dict(history)
+        out_value = messages_to_dict(self.history)
         self.write_out("messages", "messages", out_value)
 
 
