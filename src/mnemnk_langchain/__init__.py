@@ -85,13 +85,27 @@ class BaseAgent(ABC):
         Raises:
             ValueError: If the input line is invalid
         """
-        parts = line.split(" ", 3)
-        if len(parts) < 4:
+        parts = line.split(" ", 1)
+        if len(parts) < 2:
             raise ValueError("Invalid input format")
-        
-        ch = parts[1]
-        kind = parts[2]
-        value = json.loads(parts[3])
+
+        in_data = json.loads(parts[1])
+        if not isinstance(in_data, dict):
+            raise ValueError("Invalid input format")
+
+        if "ch" not in in_data or "kind" not in in_data or "value" not in in_data:
+            raise ValueError("Invalid input format")
+
+        if not isinstance(in_data["ch"], str):
+            raise ValueError("Invalid input format")
+        ch = in_data["ch"]
+
+        if not isinstance(in_data["kind"], str):
+            raise ValueError("Invalid input format")
+        kind = in_data["kind"]
+
+        value = in_data["value"]
+
         return ch, kind, value
     
     def write_out(self, ch: str, kind: str, value: Any):
@@ -102,7 +116,12 @@ class BaseAgent(ABC):
             kind: The kind of output
             value: The value to output (will be JSON serialized)
         """
-        print(f".OUT {ch} {kind} {json.dumps(value)}", flush=True)
+        out_data = {
+            "ch": ch,
+            "kind": kind,
+            "value": value
+        }
+        print(f".OUT {json.dumps(out_data)}", flush=True)
 
 
 def configure_io():
