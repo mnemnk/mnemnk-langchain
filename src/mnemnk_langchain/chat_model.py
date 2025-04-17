@@ -34,9 +34,10 @@ class ChatModelAgent(BaseAgent):
 
     def process_input(self, _ch: str, kind: str, value: any):
         if kind == "message":
-            messages = messages_from_dict([value])
-        elif kind == "messages":
-            messages = messages_from_dict(value)
+            if isinstance(value, list):
+                messages = messages_from_dict(value)
+            else:
+                messages = messages_from_dict([value])
         else:
             messages = convert_to_messages(value)
 

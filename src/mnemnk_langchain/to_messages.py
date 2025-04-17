@@ -10,7 +10,7 @@ class ToMessagesAgent(BaseAgent):
     def process_input(self, _ch: str, _kind: str, value: any):
         messages = convert_to_messages(value)
         out_value = messages_to_dict(messages)
-        self.write_out("messages", "messages", out_value)
+        self.write_out("messages", "message", out_value)
 
 
 def main():
