@@ -1,6 +1,5 @@
 from langchain_core.messages.base import messages_to_dict
 from langchain_core.messages.utils import convert_to_messages
-from loguru import logger
 
 from . import BaseAgent, run_agent
 
@@ -30,15 +29,12 @@ class InitialMessagesAgent(BaseAgent):
                 messages = messages_to_dict(convert_to_messages(initial_messages))
             self.is_initial = False
         
-        if kind == "message":
-            messages.append(value)
-        elif kind == "messages":
+        if isinstance(value, list):
             messages.extend(value)
         else:
-            logger.error(f"Error: Unknown kind: {kind}")
-            return
+            messages.append(value)
 
-        self.write_out("messages", "messages", messages)
+        self.write_out("messages", "message", messages)
 
 
 def main():
