@@ -9,7 +9,7 @@
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-chat-model"]
       },
-      "inputs": ["*"],
+      "inputs": ["message"],
       "outputs": ["message"],
       "default_config": [
         [
@@ -41,37 +41,37 @@
       "kind": "Command",
       "name": "mnemnk-langchain-to-human-message",
       "title": "To Human Message",
-      "category": "LangChain",
+      "category": "LangChain/Prompt",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-to-human-message"]
       },
-      "inputs": ["*"],
+      "inputs": ["string"],
       "outputs": ["message"]
     },
     {
       "kind": "Command",
       "name": "mnemnk-langchain-to-messages",
       "title": "To Messages",
-      "category": "LangChain",
+      "category": "LangChain/Prompt",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-to-messages"]
       },
       "inputs": ["*"],
-      "outputs": ["messages"]
+      "outputs": ["message"]
     },
     {
       "kind": "Command",
       "name": "mnemnk-langchain-initial-messages",
       "title": "Initial Messages",
-      "category": "LangChain",
+      "category": "LangChain/Prompt",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-initial-messages"]
       },
-      "inputs": ["reset", "*"],
-      "outputs": ["messages"],
+      "inputs": ["message", "reset"],
+      "outputs": ["message"],
       "default_config": [
         [
           "messages",
@@ -87,7 +87,7 @@
       "kind": "Command",
       "name": "mnemnk-langchain-recursive-character-text-splitter",
       "title": "Recursive Character Text Splitter",
-      "category": "LangChain",
+      "category": "LangChain/Text",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-recursive-character-text-splitter"]
@@ -125,13 +125,13 @@
       "kind": "Command",
       "name": "mnemnk-langchain-in-memory-chat-history",
       "title": "InMemory Chat History",
-      "category": "LangChain",
+      "category": "LangChain/Prompt",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-in-memory-chat-history"]
       },
-      "inputs": ["*"],
-      "outputs": ["messages"],
+      "inputs": ["message", "reset"],
+      "outputs": ["message"],
       "default_config": [
         [
           "max_messages",
@@ -163,7 +163,7 @@
       "kind": "Command",
       "name": "mnemnk-langchain-py-pdf-loader",
       "title": "PyPDF Loader",
-      "category": "LangChain",
+      "category": "LangChain/Loader",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-py-pdf-loader"]
@@ -175,7 +175,7 @@
       "kind": "Command",
       "name": "mnemnk-langchain-py-mu-pdf-loader",
       "title": "PyMuPDF Loader",
-      "category": "LangChain",
+      "category": "LangChain/Loader",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-py-mu-pdf-text-loader"]
@@ -187,7 +187,7 @@
       "kind": "Command",
       "name": "mnemnk-langchain-web-base-loader",
       "title": "Web Base Loader",
-      "category": "LangChain",
+      "category": "LangChain/Loader",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-web-base-loader"]
@@ -199,7 +199,7 @@
       "kind": "Command",
       "name": "mnemnk-langchain-youtube-loader",
       "title": "YouTube Loader",
-      "category": "LangChain",
+      "category": "LangChain/Loader",
       "command": {
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-youtube-loader"]

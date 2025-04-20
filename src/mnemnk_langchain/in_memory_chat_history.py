@@ -1,5 +1,5 @@
 from langchain_core.messages.base import messages_to_dict
-from langchain_core.messages.utils import messages_from_dict, trim_messages
+from langchain_core.messages.utils import convert_to_messages, messages_from_dict, trim_messages
 
 from . import BaseAgent, run_agent
 
@@ -18,12 +18,20 @@ class InMemoryChatHistory(BaseAgent):
         super().__init__(config)
         self.history = []
 
-    def process_input(self, _ch: str, kind: str, value: any):
+    def process_input(self, ch: str, kind: str, value: any):
+        if ch == "reset":
+            self.history = []
+            return
+
+        if kind != "message":
+            return
+
         # Add the new message to the history
         if isinstance(value, list):
             messages = messages_from_dict(value)
         else:
             messages = messages_from_dict([value])
+
         self.history.extend(messages)
         
         # Trim the history to the max count
@@ -53,7 +61,7 @@ class InMemoryChatHistory(BaseAgent):
             return
 
         out_value = messages_to_dict(self.history)
-        self.write_out("messages", "message", out_value)
+        self.write_out("message", "message", out_value)
 
 
 def main():
