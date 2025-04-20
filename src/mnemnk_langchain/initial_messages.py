@@ -14,11 +14,14 @@ class InitialMessagesAgent(BaseAgent):
     def __init__(self, config=None):
         """Initialize the InitialMessagesAgent with configuration."""
         super().__init__(config)
-        self.is_initial = False
+        self.is_initial = True
 
     def process_input(self, ch: str, kind: str, value: any):
         if ch == "reset":
             self.is_initial = True
+            return
+
+        if kind != "message":
             return
 
         messages = []
@@ -29,12 +32,12 @@ class InitialMessagesAgent(BaseAgent):
                 messages = messages_to_dict(convert_to_messages(initial_messages))
             self.is_initial = False
         
-        if isinstance(value, list):
-            messages.extend(value)
-        else:
-            messages.append(value)
+            if isinstance(value, list):
+                messages.extend(value)
+            else:
+                messages.append(value)
 
-        self.write_out("messages", "message", messages)
+        self.write_out("message", "message", messages)
 
 
 def main():

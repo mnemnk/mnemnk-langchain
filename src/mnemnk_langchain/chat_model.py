@@ -33,13 +33,13 @@ class ChatModelAgent(BaseAgent):
         )
 
     def process_input(self, _ch: str, kind: str, value: any):
-        if kind == "message":
-            if isinstance(value, list):
-                messages = messages_from_dict(value)
-            else:
-                messages = messages_from_dict([value])
+        if kind != "message":
+            return
+
+        if isinstance(value, list):
+            messages = messages_from_dict(value)
         else:
-            messages = convert_to_messages(value)
+            messages = messages_from_dict([value])
 
         # Skip if the last message is from AI to avoid infinite loop
         if messages and messages[-1].type == "ai":
