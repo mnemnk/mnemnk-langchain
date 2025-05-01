@@ -33,22 +33,36 @@ class ChatModelAgent(BaseAgent):
         )
 
     def process_input(self, _ch: str, kind: str, value: any):
-        if kind != "message":
-            return
-
-        if isinstance(value, list):
+        if kind == "messages":
+            # TODO: Check if the input value is a list of messages
             messages = messages_from_dict(value)
-        else:
+
+            # Skip if the last message is from AI to avoid infinite loop
+            if messages and messages[-1].type == "ai":
+                return
+
+            # Invoke the model and get the response
+            resp = self.model.invoke(messages)
+            out_value = message_to_dict(resp)
+            self.write_out("message", "message", out_value)
+
+        elif kind == "message":
+            if isinstance(value, list):
+                out_messages = []
+                for item in value:
+                    messages = messages_from_dict([item])
+                    # Invoke the model and get the response
+                    resp = self.model.invoke(messages)
+                    out_value = message_to_dict(resp)
+                    out_messages.append(out_value)
+                self.write_out("message", "message", out_messages)
+                return
+            
             messages = messages_from_dict([value])
-
-        # Skip if the last message is from AI to avoid infinite loop
-        if messages and messages[-1].type == "ai":
-            return
-
-        # Invoke the model and get the response
-        resp = self.model.invoke(messages)
-        out_value = message_to_dict(resp)
-        self.write_out("message", "message", out_value)
+            # Invoke the model and get the response
+            resp = self.model.invoke(messages)
+            out_value = message_to_dict(resp)
+            self.write_out("message", "message", out_value)
 
 
 def main():

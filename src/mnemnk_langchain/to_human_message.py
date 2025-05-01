@@ -8,6 +8,11 @@ class ToHumanMessageAgent(BaseAgent):
     """Convert string input to HumanMessage."""
 
     def process_input(self, _ch: str, _kind: str, value: any):
+        if isinstance(value, list):
+            messages = [message_to_dict(HumanMessage(content=item)) for item in value]
+            self.write_out("message", "message", messages)
+            return
+        
         message = HumanMessage(content=value)
         out_value = message_to_dict(message)
         self.write_out("message", "message", out_value)

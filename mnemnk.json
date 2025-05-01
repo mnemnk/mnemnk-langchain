@@ -9,7 +9,7 @@
         "cmd": "uv",
         "args": ["run", "mnemnk-langchain-chat-model"]
       },
-      "inputs": ["message"],
+      "inputs": ["messages"],
       "outputs": ["message"],
       "default_config": [
         [
