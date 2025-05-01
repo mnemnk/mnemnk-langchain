@@ -9,11 +9,7 @@ class ToHumanMessageAgent(BaseAgent):
 
     def process_input(self, _ch: str, _kind: str, value: any):
         if isinstance(value, list):
-            messages = []
-            for item in value:
-                message = HumanMessage(content=item)
-                out_value = message_to_dict(message)
-                messages.append(out_value)
+            messages = [message_to_dict(HumanMessage(content=item)) for item in value]
             self.write_out("message", "message", messages)
             return
         
