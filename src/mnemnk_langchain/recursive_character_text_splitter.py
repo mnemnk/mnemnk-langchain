@@ -27,8 +27,7 @@ class RecursiveCharacterTextSplitterAgent(BaseAgent):
     
     def process_input(self, _ch: str, _kind: str, value: any):
         texts = self.text_splitter.split_text(value)
-        for text in texts:
-            self.write_out("texts", "text", text)
+        self.write_out("texts", "text", texts)
     
 
 def main():
