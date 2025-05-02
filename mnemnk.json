@@ -63,28 +63,6 @@
     },
     {
       "kind": "Command",
-      "name": "mnemnk-langchain-initial-messages",
-      "title": "Initial Messages",
-      "category": "LangChain/Prompt",
-      "command": {
-        "cmd": "uv",
-        "args": ["run", "mnemnk-langchain-initial-messages"]
-      },
-      "inputs": ["message", "reset"],
-      "outputs": ["message"],
-      "default_config": [
-        [
-          "messages",
-          {
-            "value": null,
-            "type": "object",
-            "title": "Initial Messages"
-          }
-        ]
-      ]
-    },
-    {
-      "kind": "Command",
       "name": "mnemnk-langchain-recursive-character-text-splitter",
       "title": "Recursive Character Text Splitter",
       "category": "LangChain/Text",
@@ -131,7 +109,7 @@
         "args": ["run", "mnemnk-langchain-in-memory-chat-history"]
       },
       "inputs": ["message", "reset"],
-      "outputs": ["message"],
+      "outputs": ["messages"],
       "default_config": [
         [
           "max_messages",
@@ -144,8 +122,8 @@
         [
           "start_on",
           {
-            "value": null,
-            "type": "object",
+            "value": "",
+            "type": "string",
             "title": "Start on"
           }
         ],
@@ -169,7 +147,7 @@
         "args": ["run", "mnemnk-langchain-py-pdf-loader"]
       },
       "inputs": ["path"],
-      "outputs": ["document", "content"]
+      "outputs": ["documents", "contents"]
     },
     {
       "kind": "Command",
@@ -181,7 +159,7 @@
         "args": ["run", "mnemnk-langchain-py-mu-pdf-text-loader"]
       },
       "inputs": ["path"],
-      "outputs": ["document", "content"]
+      "outputs": ["documents", "contents"]
     },
     {
       "kind": "Command",

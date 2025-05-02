@@ -8,13 +8,17 @@ class PyPDFLoaderAgent(BaseAgent):
         from langchain_community.document_loaders import PyPDFLoader
 
         loader = PyPDFLoader(value)
+        out_texts = []
+        out_doc_dicts = []
         for page in loader.lazy_load():
             doc_dict = {
                 "metadata": page.metadata,
                 "page_content": page.page_content,
             }
-            self.write_out("document", "document", doc_dict)
-            self.write_out("content", "text", page.page_content)
+            out_texts.append(page.page_content)
+            out_doc_dicts.append(doc_dict)
+        self.write_out("documents", "document", out_doc_dicts)
+        self.write_out("contents", "text", out_texts)
 
 def main():
     run_agent(PyPDFLoaderAgent)

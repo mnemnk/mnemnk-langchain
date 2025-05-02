@@ -1,7 +1,7 @@
 from typing import Optional
 from langchain.chat_models import init_chat_model
 from langchain_core.messages.base import message_to_dict
-from langchain_core.messages.utils import convert_to_messages, messages_from_dict
+from langchain_core.messages.utils import messages_from_dict
 
 from . import BaseAgent, run_agent
 

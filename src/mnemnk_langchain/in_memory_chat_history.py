@@ -1,5 +1,5 @@
 from langchain_core.messages.base import messages_to_dict
-from langchain_core.messages.utils import convert_to_messages, messages_from_dict, trim_messages
+from langchain_core.messages.utils import messages_from_dict, trim_messages
 
 from . import BaseAgent, run_agent
 
@@ -24,6 +24,7 @@ class InMemoryChatHistory(BaseAgent):
             return
 
         if kind != "message":
+            # TODO: handle "messages"
             return
 
         # Add the new message to the history
@@ -47,7 +48,7 @@ class InMemoryChatHistory(BaseAgent):
             # Most chat models expect that chat history starts with either:
             # (1) a HumanMessage or
             # (2) a SystemMessage followed by a HumanMessage
-            start_on=self.config["start_on"],
+            start_on=self.config["start_on"].split(",") if self.config["start_on"] else None,
             # Most chat models expect that chat history ends with either:
             # (1) a HumanMessage or
             # (2) a ToolMessage
@@ -61,7 +62,7 @@ class InMemoryChatHistory(BaseAgent):
             return
 
         out_value = messages_to_dict(self.history)
-        self.write_out("message", "message", out_value)
+        self.write_out("messages", "messages", out_value)
 
 
 def main():
