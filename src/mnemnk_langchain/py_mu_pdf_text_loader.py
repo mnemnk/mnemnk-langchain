@@ -8,14 +8,18 @@ class PyMuPDFTextLoaderAgent(BaseAgent):
         import fitz # PyMuPDF
 
         pdf = fitz.open(value)
+        out_texts = []
+        out_doc_dicts = []
         for page in pdf:
             text = page.get_text()
+            out_texts.append(text)
             doc_dict = {
                 "metadata": {"page_number": page.number},
                 "page_content": text,
             }
-            self.write_out("document", "document", doc_dict)
-            self.write_out("content", "text", text)
+            out_doc_dicts.append(doc_dict)
+        self.write_out("documents", "document", out_doc_dicts)
+        self.write_out("contents", "text", out_texts)
 
 
 def main():
