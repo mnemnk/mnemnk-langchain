@@ -32,7 +32,7 @@ class ChatModelAgent(BaseAgent):
             **self.config["kwargs"],
         )
 
-    def process_input(self, _ch: str, kind: str, value: any):
+    def process_input(self, _ch: str, kind: str, value: any, metadata: Optional[dict[str, any]]):
         if kind == "messages":
             # TODO: Check if the input value is a list of messages
             messages = messages_from_dict(value)
@@ -44,7 +44,7 @@ class ChatModelAgent(BaseAgent):
             # Invoke the model and get the response
             resp = self.model.invoke(messages)
             out_value = message_to_dict(resp)
-            self.write_out("message", "message", out_value)
+            self.write_out("message", "message", out_value, metadata)
 
         elif kind == "message":
             if isinstance(value, list):
@@ -55,14 +55,14 @@ class ChatModelAgent(BaseAgent):
                     resp = self.model.invoke(messages)
                     out_value = message_to_dict(resp)
                     out_messages.append(out_value)
-                self.write_out("message", "message", out_messages)
+                self.write_out("message", "message", out_messages, metadata)
                 return
             
             messages = messages_from_dict([value])
             # Invoke the model and get the response
             resp = self.model.invoke(messages)
             out_value = message_to_dict(resp)
-            self.write_out("message", "message", out_value)
+            self.write_out("message", "message", out_value, metadata)
 
 
 def main():

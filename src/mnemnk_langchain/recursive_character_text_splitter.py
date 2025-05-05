@@ -25,9 +25,9 @@ class RecursiveCharacterTextSplitterAgent(BaseAgent):
             chunk_overlap=self.config["chunk_overlap"],
         )
     
-    def process_input(self, _ch: str, _kind: str, value: any):
+    def process_input(self, _ch: str, _kind: str, value: any, metadata: Optional[dict[str, any]]):
         texts = self.text_splitter.split_text(value)
-        self.write_out("texts", "text", texts)
+        self.write_out("texts", "text", texts, metadata)
     
 
 def main():

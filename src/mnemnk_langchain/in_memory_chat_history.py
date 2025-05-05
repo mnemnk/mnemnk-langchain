@@ -1,3 +1,4 @@
+from typing import Optional
 from langchain_core.messages.base import messages_to_dict
 from langchain_core.messages.utils import messages_from_dict, trim_messages
 
@@ -18,7 +19,7 @@ class InMemoryChatHistory(BaseAgent):
         super().__init__(config)
         self.history = []
 
-    def process_input(self, ch: str, kind: str, value: any):
+    def process_input(self, ch: str, kind: str, value: any, metadata: Optional[dict[str, any]]):
         if ch == "reset":
             self.history = []
             return
@@ -62,7 +63,7 @@ class InMemoryChatHistory(BaseAgent):
             return
 
         out_value = messages_to_dict(self.history)
-        self.write_out("messages", "messages", out_value)
+        self.write_out("messages", "messages", out_value, metadata)
 
 
 def main():
