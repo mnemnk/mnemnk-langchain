@@ -1,3 +1,4 @@
+from typing import Optional
 from loguru import logger
 
 from . import BaseAgent, run_agent
@@ -6,7 +7,7 @@ from . import BaseAgent, run_agent
 class WebBaseLoaderAgent(BaseAgent):
     """Load web pages using WebBaseLoader."""
 
-    def process_input(self, _ch: str, _kind: str, value: any):
+    def process_input(self, _ch: str, _kind: str, value: any, metadata: Optional[dict[str, any]]):
         from langchain_community.document_loaders import WebBaseLoader
 
         if value.startswith("http://") or value.startswith("https://"):
@@ -21,8 +22,8 @@ class WebBaseLoaderAgent(BaseAgent):
                 "metadata": document.metadata,
                 "page_content": document.page_content,
             }
-            self.write_out("document", "document", doc_dict)
-            self.write_out("content", "text", document.page_content)
+            self.write_out("document", "document", doc_dict, metadata)
+            self.write_out("content", "text", document.page_content, metadata)
 
 
 def main():

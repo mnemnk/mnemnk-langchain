@@ -56,31 +56,32 @@ class BaseAgent(ABC):
     def _handle_input(self, line: str):
         """Handle IN command."""
         try:
-            [ch, kind, value] = BaseAgent.parse_input(line)
-            self.process_input(ch, kind, value)
+            [ch, kind, value, metadata] = BaseAgent.parse_input(line)
+            self.process_input(ch, kind, value, metadata)
         except Exception as e:
             logger.error(f"Error processing input: {e}")
     
     @abstractmethod
-    def process_input(self, ch: str, kind: str, value: Any):
+    def process_input(self, ch: str, kind: str, value: Any, metadata: Optional[dict[str, Any]]):
         """Process input based on kind and value. Must be implemented by subclasses.
         
         Args:
             ch: The channel of input
             kind: The kind of input
             value: The input value
+            metadata: Optional metadata for the input
         """
         pass
 
     @staticmethod
-    def parse_input(line: str) -> tuple[str, str, Any]:
+    def parse_input(line: str) -> tuple[str, str, Any, Optional[dict[str, Any]]]:
         """Parse input line into kind and value.
         
         Args:
             line: Input line starting with ".IN "
             
         Returns:
-            A tuple of (ch, kind, value)
+            A tuple of (ch, kind, value, metadata)
             
         Raises:
             ValueError: If the input line is invalid
@@ -106,9 +107,11 @@ class BaseAgent(ABC):
 
         value = in_data["value"]
 
-        return ch, kind, value
+        metadata = in_data.get("metadata", None)
+
+        return ch, kind, value, metadata
     
-    def write_out(self, ch: str, kind: str, value: Any):
+    def write_out(self, ch: str, kind: str, value: Any, metadata: Optional[dict[str, Any]]):
         """Write output with given kind and value.
         
         Args:
@@ -119,7 +122,8 @@ class BaseAgent(ABC):
         out_data = {
             "ch": ch,
             "kind": kind,
-            "value": value
+            "value": value,
+            "metadata": metadata,
         }
         print(f".OUT {json.dumps(out_data)}", flush=True)
 
