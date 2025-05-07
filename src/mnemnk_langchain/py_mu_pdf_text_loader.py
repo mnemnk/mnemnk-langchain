@@ -1,14 +1,16 @@
-from typing import Optional
-from . import BaseAgent, run_agent
+from typing import override
+
+from . import AgentContext, AgentData, BaseAgent, run_agent
 
 
 class PyMuPDFTextLoaderAgent(BaseAgent):
     """Load PDF file using PyMuPDF."""
 
-    def process_input(self, _ch: str, _kind: str, value: any, metadata: Optional[dict[str, any]]):
-        import fitz # PyMuPDF
+    @override
+    def process_input(self, ctx: AgentContext, data: AgentData):
+        import fitz  # PyMuPDF
 
-        pdf = fitz.open(value)
+        pdf = fitz.open(data.value)
         out_texts = []
         out_doc_dicts = []
         for page in pdf:
@@ -19,8 +21,8 @@ class PyMuPDFTextLoaderAgent(BaseAgent):
                 "page_content": text,
             }
             out_doc_dicts.append(doc_dict)
-        self.write_out("documents", "document", out_doc_dicts, metadata)
-        self.write_out("contents", "text", out_texts, metadata)
+        self.write_out(ctx, "documents", AgentData("document", out_doc_dicts))
+        self.write_out(ctx, "contents", AgentData("text", out_texts))
 
 
 def main():

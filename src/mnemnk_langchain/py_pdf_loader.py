@@ -1,13 +1,16 @@
-from typing import Any, Optional
-from . import BaseAgent, run_agent
+from typing import override
+
+from . import AgentContext, AgentData, BaseAgent, run_agent
+
 
 class PyPDFLoaderAgent(BaseAgent):
     """Load PDF file using PyPDFLoader."""
 
-    def process_input(self, _ch: str, _kind: str, value: Any, metadata: Optional[dict[str, Any]]):
+    @override
+    def process_input(self, ctx: AgentContext, data: AgentData):
         from langchain_community.document_loaders import PyPDFLoader
 
-        loader = PyPDFLoader(value)
+        loader = PyPDFLoader(data.value)
         out_texts = []
         out_doc_dicts = []
         for page in loader.lazy_load():
@@ -17,8 +20,9 @@ class PyPDFLoaderAgent(BaseAgent):
             }
             out_texts.append(page.page_content)
             out_doc_dicts.append(doc_dict)
-        self.write_out("documents", "document", out_doc_dicts, metadata)
-        self.write_out("contents", "text", out_texts, metadata)
+        self.write_out(ctx, "documents", AgentData("document", out_doc_dicts))
+        self.write_out(ctx, "contents", AgentData("text", out_texts))
+
 
 def main():
     run_agent(PyPDFLoaderAgent)
