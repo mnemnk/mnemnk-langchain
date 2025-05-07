@@ -1,12 +1,11 @@
-from typing import Any, Optional, override
-
-from dotenv import load_dotenv
+from typing import Optional
 from langchain.chat_models import init_chat_model
 from langchain_core.messages.base import message_to_dict
 from langchain_core.messages.utils import messages_from_dict
 
-from . import AgentContext, AgentData, BaseAgent, run_agent
+from . import BaseAgent, run_agent
 
+from dotenv import load_dotenv
 load_dotenv()
 
 
@@ -23,9 +22,8 @@ class ChatModelAgent(BaseAgent):
         """Initialize the ChatModelAgent with configuration."""
         super().__init__(config)
         self.process_config(self.config)
-
-    @override
-    def process_config(self, _new_config: Optional[dict[str, Any]]):
+    
+    def process_config(self, _new_config: Optional[dict[str, any]]):
         # Initialize the chat model
         self.model = init_chat_model(
             self.config["model"],
@@ -34,11 +32,10 @@ class ChatModelAgent(BaseAgent):
             **self.config["kwargs"],
         )
 
-    @override
-    def process_input(self, ctx: AgentContext, data: AgentData):
-        if data.kind == "messages":
+    def process_input(self, _ch: str, kind: str, value: any, metadata: Optional[dict[str, any]]):
+        if kind == "messages":
             # TODO: Check if the input value is a list of messages
-            messages = messages_from_dict(data.value)
+            messages = messages_from_dict(value)
 
             # Skip if the last message is from AI to avoid infinite loop
             if messages and messages[-1].type == "ai":
@@ -46,24 +43,26 @@ class ChatModelAgent(BaseAgent):
 
             # Invoke the model and get the response
             resp = self.model.invoke(messages)
-            self.write_out(ctx, "message", AgentData("message", message_to_dict(resp)))
+            out_value = message_to_dict(resp)
+            self.write_out("message", "message", out_value, metadata)
 
-        elif data.kind == "message":
-            if isinstance(data.value, list):
+        elif kind == "message":
+            if isinstance(value, list):
                 out_messages = []
-                for item in data.value:
+                for item in value:
                     messages = messages_from_dict([item])
                     # Invoke the model and get the response
                     resp = self.model.invoke(messages)
                     out_value = message_to_dict(resp)
                     out_messages.append(out_value)
-                self.write_out(ctx, "message", AgentData("message", out_messages))
+                self.write_out("message", "message", out_messages, metadata)
                 return
-
-            messages = messages_from_dict([data.value])
+            
+            messages = messages_from_dict([value])
             # Invoke the model and get the response
             resp = self.model.invoke(messages)
-            self.write_out(ctx, "message", AgentData("message", message_to_dict(resp)))
+            out_value = message_to_dict(resp)
+            self.write_out("message", "message", out_value, metadata)
 
 
 def main():

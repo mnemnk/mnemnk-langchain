@@ -1,9 +1,8 @@
-from typing import override
-
+from typing import Optional
 from langchain_core.messages.base import messages_to_dict
 from langchain_core.messages.utils import messages_from_dict, trim_messages
 
-from . import AgentContext, AgentData, BaseAgent, run_agent
+from . import BaseAgent, run_agent
 
 
 class InMemoryChatHistory(BaseAgent):
@@ -20,24 +19,23 @@ class InMemoryChatHistory(BaseAgent):
         super().__init__(config)
         self.history = []
 
-    @override
-    def process_input(self, ctx: AgentContext, data: AgentData):
-        if ctx.ch == "reset":
+    def process_input(self, ch: str, kind: str, value: any, metadata: Optional[dict[str, any]]):
+        if ch == "reset":
             self.history = []
             return
 
-        if data.kind != "message":
+        if kind != "message":
             # TODO: handle "messages"
             return
 
         # Add the new message to the history
-        if isinstance(data.value, list):
-            messages = messages_from_dict(data.value)
+        if isinstance(value, list):
+            messages = messages_from_dict(value)
         else:
-            messages = messages_from_dict([data.value])
+            messages = messages_from_dict([value])
 
         self.history.extend(messages)
-
+        
         # Trim the history to the max count
         self.history = trim_messages(
             self.history,
@@ -51,9 +49,7 @@ class InMemoryChatHistory(BaseAgent):
             # Most chat models expect that chat history starts with either:
             # (1) a HumanMessage or
             # (2) a SystemMessage followed by a HumanMessage
-            start_on=self.config["start_on"].split(",")
-            if self.config["start_on"]
-            else None,
+            start_on=self.config["start_on"].split(",") if self.config["start_on"] else None,
             # Most chat models expect that chat history ends with either:
             # (1) a HumanMessage or
             # (2) a ToolMessage
@@ -66,11 +62,8 @@ class InMemoryChatHistory(BaseAgent):
         if not self.history:
             return
 
-        self.write_out(
-            ctx,
-            "messages",
-            AgentData("messages", messages_to_dict(self.history)),
-        )
+        out_value = messages_to_dict(self.history)
+        self.write_out("messages", "messages", out_value, metadata)
 
 
 def main():

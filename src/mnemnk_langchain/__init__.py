@@ -2,22 +2,9 @@ import argparse
 import json
 import sys
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass
 from typing import Any, Optional, Type
 
 from loguru import logger
-
-
-@dataclass
-class AgentContext:
-    ch: str
-    vars: dict[str, Any] | None = None
-
-
-@dataclass
-class AgentData:
-    kind: str
-    value: Any
 
 
 class BaseAgent(ABC):
@@ -25,21 +12,21 @@ class BaseAgent(ABC):
 
     # Default configuration - can be overridden by subclasses
     DEFAULT_CONFIG = {}
-
+    
     def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize the agent with configuration.
-
+        
         Args:
             config: Configuration for the agent
         """
         # Use provided config or empty dict
         self.config = config or {}
-
+    
     def run(self):
         """Main loop for the agent."""
         for line in sys.stdin:
             line = line.strip()
-
+            
             if line.startswith(".CONFIG "):
                 self._handle_config(line)
             elif line == ".QUIT":
@@ -57,10 +44,10 @@ class BaseAgent(ABC):
         except Exception as e:
             logger.error(f"Error processing config: {e}")
             return
-
+    
     def process_config(self, new_config: Optional[dict[str, Any]]):
         """Process configuration changes. Can be override by subclasses.
-
+        
         Args:
             new_config: The new configuration
         """
@@ -69,31 +56,33 @@ class BaseAgent(ABC):
     def _handle_input(self, line: str):
         """Handle IN command."""
         try:
-            [ctx, data] = BaseAgent.parse_input(line)
-            self.process_input(ctx, data)
+            [ch, kind, value, metadata] = BaseAgent.parse_input(line)
+            self.process_input(ch, kind, value, metadata)
         except Exception as e:
             logger.error(f"Error processing input: {e}")
-
+    
     @abstractmethod
-    def process_input(self, ctx: AgentContext, data: AgentData):
-        """Process input. Must be implemented by subclasses.
-
+    def process_input(self, ch: str, kind: str, value: Any, metadata: Optional[dict[str, Any]]):
+        """Process input based on kind and value. Must be implemented by subclasses.
+        
         Args:
-            ctx: The context of the input
-            data: The data to process
+            ch: The channel of input
+            kind: The kind of input
+            value: The input value
+            metadata: Optional metadata for the input
         """
         pass
 
     @staticmethod
-    def parse_input(line: str) -> tuple[AgentContext, AgentData]:
+    def parse_input(line: str) -> tuple[str, str, Any, Optional[dict[str, Any]]]:
         """Parse input line into kind and value.
-
+        
         Args:
             line: Input line starting with ".IN "
-
+            
         Returns:
-            A tuple of (ctx, data)
-
+            A tuple of (ch, kind, value, metadata)
+            
         Raises:
             ValueError: If the input line is invalid
         """
@@ -105,55 +94,65 @@ class BaseAgent(ABC):
         if not isinstance(in_data, dict):
             raise ValueError("Invalid input format")
 
-        if "ctx" not in in_data or "data" not in in_data:
+        if "ch" not in in_data or "kind" not in in_data or "value" not in in_data:
             raise ValueError("Invalid input format")
 
-        ctx = AgentContext(in_data["ctx"]["ch"], in_data["ctx"].get("vars"))
-        data = AgentData(in_data["data"]["kind"], in_data["data"]["value"])
+        if not isinstance(in_data["ch"], str):
+            raise ValueError("Invalid input format")
+        ch = in_data["ch"]
 
-        return ctx, data
+        if not isinstance(in_data["kind"], str):
+            raise ValueError("Invalid input format")
+        kind = in_data["kind"]
 
-    def write_out(self, ctx: AgentContext, ch: str, data: AgentData):
+        value = in_data["value"]
+
+        metadata = in_data.get("metadata", None)
+
+        return ch, kind, value, metadata
+    
+    def write_out(self, ch: str, kind: str, value: Any, metadata: Optional[dict[str, Any]]):
         """Write output with given kind and value.
-
+        
         Args:
-            ctx: The context of the output
             ch: The channel of the output
-            data: The data to output
+            kind: The kind of output
+            value: The value to output (will be JSON serialized)
         """
         out_data = {
-            "ctx": asdict(ctx),
             "ch": ch,
-            "data": asdict(data),
+            "kind": kind,
+            "value": value,
+            "metadata": metadata,
         }
         print(f".OUT {json.dumps(out_data)}", flush=True)
 
 
 def configure_io():
     """Configure input/output streams to use UTF-8 encoding."""
-    sys.stdin.reconfigure(encoding="utf-8")
-    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stdin.reconfigure(encoding='utf-8')
+    sys.stdout.reconfigure(encoding='utf-8')
 
 
-def parse_agent_config(agent_class: Type["BaseAgent"]) -> dict[str, Any]:
+def parse_agent_config(agent_class: Type['BaseAgent']) -> dict[str, Any]:
     """Parse command line arguments and create config dictionary.
-
+    
     Args:
         agent_class: The agent class to get DEFAULT_CONFIG from
-
+        
     Returns:
         Configuration dictionary with values from DEFAULT_CONFIG and command line
     """
     # Start with class DEFAULT_CONFIG
     config = {}
-    if hasattr(agent_class, "DEFAULT_CONFIG"):
+    if hasattr(agent_class, 'DEFAULT_CONFIG'):
         config.update(agent_class.DEFAULT_CONFIG.copy())
-
+    
     # Parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="config json string")
     args = parser.parse_args()
-
+    
     # Update with command line config if provided
     if args.config:
         try:
@@ -161,23 +160,23 @@ def parse_agent_config(agent_class: Type["BaseAgent"]) -> dict[str, Any]:
             config.update(cli_config)
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing config JSON: {e}")
-
+    
     return config
 
 
-def run_agent(agent_class: Type["BaseAgent"]):
+def run_agent(agent_class: Type['BaseAgent']):
     """Create and run an agent with the given configuration.
-
+    
     Args:
         agent_class: The agent class to instantiate
         instance_config: Optional instance-specific configuration
     """
     # Configure I/O
     configure_io()
-
+    
     # Get configuration
     config = parse_agent_config(agent_class)
-
+    
     # Create and run the agent
     agent = agent_class(config)
     agent.run()

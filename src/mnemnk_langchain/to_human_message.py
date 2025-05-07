@@ -1,25 +1,22 @@
-from typing import override
-
-from langchain_core.messages.base import message_to_dict
+from typing import Optional
 from langchain_core.messages.human import HumanMessage
+from langchain_core.messages.base import message_to_dict
 
-from . import AgentContext, AgentData, BaseAgent, run_agent
+from . import BaseAgent, run_agent
 
 
 class ToHumanMessageAgent(BaseAgent):
     """Convert string input to HumanMessage."""
 
-    @override
-    def process_input(self, ctx: AgentContext, data: AgentData):
-        if isinstance(data.value, list):
-            messages = [
-                message_to_dict(HumanMessage(content=item)) for item in data.value
-            ]
-            self.write_out(ctx, "message", AgentData("message", messages))
+    def process_input(self, _ch: str, _kind: str, value: any, metadata: Optional[dict[str, any]]):
+        if isinstance(value, list):
+            messages = [message_to_dict(HumanMessage(content=item)) for item in value]
+            self.write_out("message", "message", messages, metadata)
             return
-
-        message = HumanMessage(content=data.value)
-        self.write_out(ctx, "message", AgentData("message", message_to_dict(message)))
+        
+        message = HumanMessage(content=value)
+        out_value = message_to_dict(message)
+        self.write_out("message", "message", out_value, metadata)
 
 
 def main():

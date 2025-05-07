@@ -1,19 +1,17 @@
-from typing import override
-
+from typing import Optional
 from loguru import logger
 
-from . import AgentContext, AgentData, BaseAgent, run_agent
+from . import BaseAgent, run_agent
 
 
 class WebBaseLoaderAgent(BaseAgent):
     """Load web pages using WebBaseLoader."""
 
-    @override
-    def process_input(self, ctx: AgentContext, data: AgentData):
+    def process_input(self, _ch: str, _kind: str, value: any, metadata: Optional[dict[str, any]]):
         from langchain_community.document_loaders import WebBaseLoader
 
-        if data.value.startswith("http://") or data.value.startswith("https://"):
-            loader = WebBaseLoader(web_path=data.value)
+        if value.startswith("http://") or value.startswith("https://"):
+            loader = WebBaseLoader(web_path=value)
             documents = loader.load()
             if not documents:
                 logger.error("No documents found")
@@ -24,8 +22,8 @@ class WebBaseLoaderAgent(BaseAgent):
                 "metadata": document.metadata,
                 "page_content": document.page_content,
             }
-            self.write_out(ctx, "document", AgentData("document", doc_dict))
-            self.write_out(ctx, "content", AgentData("text", document.page_content))
+            self.write_out("document", "document", doc_dict, metadata)
+            self.write_out("content", "text", document.page_content, metadata)
 
 
 def main():
