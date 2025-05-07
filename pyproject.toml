@@ -1,7 +1,7 @@
 [project]
 name = "mnemnk-langchain"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "LangChain agents for Mnemnk app"
 readme = "README.md"
 authors = [
     { name = "Akira Ishino", email = "akira@lumilab.jp" }
@@ -34,3 +34,8 @@ mnemnk-langchain-youtube-loader = "mnemnk_langchain.youtube_loader:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.8",
+]
