@@ -16,6 +16,8 @@ class YoutubeLoaderAgent(BaseAgent):
             language = [
                 lang.strip() for lang in self.config.get("language", "en").split(",")
             ]
+            if not language:
+                language = "en"
             translation = self.config.get("translation")
             if translation == "":
                 translation = None
