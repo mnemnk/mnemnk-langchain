@@ -183,7 +183,23 @@
         "args": ["run", "mnemnk-langchain-youtube-loader"]
       },
       "inputs": ["url"],
-      "outputs": ["document", "content"]
+      "outputs": ["document", "content"],
+      "default_config": [
+        [
+          "language",
+          {
+            "value": "en",
+            "type": "string"
+          }
+        ],
+        [
+          "translation",
+          {
+            "value": "",
+            "type": "string"
+          }
+        ]
+      ]
     }
   ]
 }
