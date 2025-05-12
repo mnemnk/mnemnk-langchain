@@ -13,7 +13,9 @@ class YoutubeLoaderAgent(BaseAgent):
         from langchain_community.document_loaders import YoutubeLoader
 
         if data.value.startswith("https://www.youtube.com/"):
-            language = self.config.get("language", "en").split(",")
+            language = [
+                lang.strip() for lang in self.config.get("language", "en").split(",")
+            ]
             translation = self.config.get("translation")
             if translation == "":
                 translation = None
