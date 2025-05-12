@@ -13,7 +13,22 @@ class YoutubeLoaderAgent(BaseAgent):
         from langchain_community.document_loaders import YoutubeLoader
 
         if data.value.startswith("https://www.youtube.com/"):
-            loader = YoutubeLoader.from_youtube_url(data.value, add_video_info=False)
+            language = [
+                lang.strip() for lang in self.config.get("language", "en").split(",")
+            ]
+            if not language:
+                language = "en"
+            translation = self.config.get("translation")
+            if translation == "":
+                translation = None
+
+            loader = YoutubeLoader.from_youtube_url(
+                data.value,
+                add_video_info=False,
+                language=language,
+                translation=translation,
+            )
+
             documents = loader.load()
             if not documents:
                 logger.error("No documents found")
