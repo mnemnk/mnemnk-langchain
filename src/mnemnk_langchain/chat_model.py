@@ -40,8 +40,8 @@ class ChatModelAgent(BaseAgent):
             # TODO: Check if the input value is a list of messages
             messages = messages_from_dict(data.value)
 
-            # Skip if the last message is from AI to avoid infinite loop
-            if messages and messages[-1].type == "ai":
+            # Skip if the last message is not from human to avoid infinite loop
+            if messages and messages[-1].type != "human":
                 return
 
             # Invoke the model and get the response
@@ -53,6 +53,8 @@ class ChatModelAgent(BaseAgent):
                 out_messages = []
                 for item in data.value:
                     messages = messages_from_dict([item])
+                    if messages and messages[-1].type != "human":
+                        continue
                     # Invoke the model and get the response
                     resp = self.model.invoke(messages)
                     out_value = message_to_dict(resp)
