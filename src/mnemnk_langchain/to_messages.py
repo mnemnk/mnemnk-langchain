@@ -11,7 +11,15 @@ class ToMessagesAgent(BaseAgent):
 
     @override
     def process_input(self, ctx: AgentContext, data: AgentData):
-        messages = convert_to_messages(data.value)
+        if isinstance(data.value, list):
+            # Convert each item in the list to a message
+            messages = convert_to_messages(data.value)
+            self.write_out(
+                ctx, "message", AgentData("message", messages_to_dict(messages))
+            )
+            return
+
+        messages = convert_to_messages([data.value])
         self.write_out(ctx, "message", AgentData("message", messages_to_dict(messages)))
 
 

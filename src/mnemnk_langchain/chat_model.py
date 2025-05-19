@@ -3,9 +3,9 @@ from typing import Any, Optional, override
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages.base import message_to_dict
-from langchain_core.messages.utils import messages_from_dict
 
 from . import AgentContext, AgentData, BaseAgent, run_agent
+from .utils import data_to_messages
 
 load_dotenv()
 
@@ -36,10 +36,9 @@ class ChatModelAgent(BaseAgent):
 
     @override
     def process_input(self, ctx: AgentContext, data: AgentData):
-        if data.kind == "messages":
-            # TODO: Check if the input value is a list of messages
-            messages = messages_from_dict(data.value)
+        messages = data_to_messages(data)
 
+        if data.kind == "messages":
             # Skip if the last message is not from human to avoid infinite loop
             if messages and messages[-1].type != "human":
                 return
@@ -51,20 +50,38 @@ class ChatModelAgent(BaseAgent):
         elif data.kind == "message":
             if isinstance(data.value, list):
                 out_messages = []
-                for item in data.value:
-                    messages = messages_from_dict([item])
-                    if messages and messages[-1].type != "human":
+                for msgs in messages:
+                    if msgs and msgs[-1].type != "human":
                         continue
                     # Invoke the model and get the response
-                    resp = self.model.invoke(messages)
+                    resp = self.model.invoke(msgs)
                     out_value = message_to_dict(resp)
                     out_messages.append(out_value)
                 self.write_out(ctx, "message", AgentData("message", out_messages))
                 return
 
-            messages = messages_from_dict([data.value])
             # Invoke the model and get the response
             resp = self.model.invoke(messages)
+            self.write_out(ctx, "message", AgentData("message", message_to_dict(resp)))
+
+        else:
+            if isinstance(messages, list):
+                # Skip if the last message is not from human to avoid infinite loop
+                if messages and messages[-1].type != "human":
+                    return
+
+                # Invoke the model and get the response
+                resp = self.model.invoke(messages)
+                self.write_out(
+                    ctx, "message", AgentData("message", message_to_dict(resp))
+                )
+                return
+
+            if messages.type != "human":
+                return
+
+            # Invoke the model and get the response
+            resp = self.model.invoke([messages])
             self.write_out(ctx, "message", AgentData("message", message_to_dict(resp)))
 
 
