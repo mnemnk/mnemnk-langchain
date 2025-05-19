@@ -1,9 +1,10 @@
 from typing import override
 
 from langchain_core.messages.base import messages_to_dict
-from langchain_core.messages.utils import messages_from_dict, trim_messages
+from langchain_core.messages.utils import trim_messages
 
 from . import AgentContext, AgentData, BaseAgent, run_agent
+from .utils import data_to_messages
 
 
 class InMemoryChatHistory(BaseAgent):
@@ -26,15 +27,9 @@ class InMemoryChatHistory(BaseAgent):
             self.history = []
             return
 
-        if data.kind != "message":
-            # TODO: handle "messages"
-            return
-
-        # Add the new message to the history
-        if isinstance(data.value, list):
-            messages = messages_from_dict(data.value)
-        else:
-            messages = messages_from_dict([data.value])
+        messages = data_to_messages(data)
+        if not isinstance(messages, list):
+            messages = [messages]
 
         self.history.extend(messages)
 
